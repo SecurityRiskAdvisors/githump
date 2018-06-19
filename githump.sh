@@ -96,14 +96,14 @@ function get_org_emails() {
     # clone the repo and extract email addresses
     # -----------------------------------------------------------
     git clone -n -q "${repo}"
-    cd ${repo_dir}
+    cd "${repo_dir}" || { echo "Could not cd to ${repo}" 1>&2; exit 1; }
     git log --all | grep "^Author:" | sort -u | filter_function >> "${output_file}"
 
     # -----------------------------------------------------------
     # update user with status
     # -----------------------------------------------------------
     total=$(git log --all | grep "^Author:" | sort -u | filter_function | wc -l)
-    [ $total -gt 0 ] && log_success "Dumped ${total} email addresses to ${output_file}"
+    [ "$total" -gt 0 ] && log_success "Dumped ${total} email addresses to ${output_file}"
 
     # -----------------------------------------------------------
     # remove the repo
@@ -131,14 +131,14 @@ function get_user_emails() {
     # clone the repo and extract email addresses
     # -----------------------------------------------------------
     git clone -n -q "${repo}"
-    cd ${repo_dir}
+    cd "${repo_dir}" || { echo "Could not cd to ${repo}" 1>&2; exit 1; }
     git log --all | grep "^Author:" | sort -u | filter_function >> "${output_file}"
 
     # -----------------------------------------------------------
     # update user with status
     # -----------------------------------------------------------
     total=$(git log --all | grep "^Author:" | sort -u | filter_function | wc -l)
-    [ $total -gt 0 ] && log_success "Dumped ${total} email addresses to ${output_file}"
+    [ "$total" -gt 0 ] && log_success "Dumped ${total} email addresses to ${output_file}"
 
     # -----------------------------------------------------------
     # remove the repo
@@ -169,15 +169,15 @@ for target in ${BASH_ARGV[*]}; do
   # collect the emails from the repositories
   # -----------------------------------------------------------
   log_info "Beginning collection for $target.  This may take a while."
-  get_org_emails $target
-  get_user_emails $target
+  get_org_emails "$target"
+  get_user_emails "$target"
 
   # -----------------------------------------------------------
   # accumulate all the unique emails
   # -----------------------------------------------------------
   address_count=$(find "${temp_dir}/${target}" -name "*.results" -type f -exec cat "{}" + | sort | uniq | wc -l)
   find "${temp_dir}/${target}" -name "*.results" -type f -exec cat "{}" + | sort | uniq >> "./results/${target}.txt"
-  rm -rf "${temp_dir}/${target}"
+  rm -rf "${temp_dir:?}/${target}"
   log_success "Collected ${address_count} emails for $target, stored in ./results/${target}.txt"
 
   # -----------------------------------------------------------
