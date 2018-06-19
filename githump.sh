@@ -36,7 +36,11 @@ fi
 # runtime configuration
 # -----------------------------------------------------------
 count=0
-temp_dir="/tmp/githump"
+if hash mktemp; then
+	temp_dir=$(mktemp -d)
+else
+	temp_dir="/tmp/githump"
+fi
 
 
 # -----------------------------------------------------------
