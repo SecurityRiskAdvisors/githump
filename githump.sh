@@ -83,7 +83,7 @@ function usage() {
 # grab the list of repos via the /orgs api
 # -----------------------------------------------------------
 function get_org_emails() {
-  curl -s "https://api.github.com/orgs/${1}/repos" | grep html_url | sort | uniq | awk -F \" '{print $4}' | tail -n +2 | while read repo; do
+  curl -s "https://api.github.com/orgs/${1}/repos?per_page=100" | grep html_url | sort | uniq | awk -F \" '{print $4}' | tail -n +2 | while read repo; do
     # -----------------------------------------------------------
     # set up the results directory and file
     # -----------------------------------------------------------
@@ -118,7 +118,7 @@ function get_org_emails() {
 # grab the list of repos via the /orgs api
 # -----------------------------------------------------------
 function get_user_emails() {
-  curl -s "https://api.github.com/users/${1}/repos" | grep html_url | sort | uniq | awk -F \" '{print $4}' | tail -n +2 | while read repo; do
+  curl -s "https://api.github.com/users/${1}/repos?per_page=100" | grep html_url | sort | uniq | awk -F \" '{print $4}' | tail -n +2 | while read repo; do
     # -----------------------------------------------------------
     # set up the results directory and file
     # -----------------------------------------------------------
