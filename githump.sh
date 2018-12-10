@@ -83,11 +83,11 @@ function usage() {
 # grab the list of repos via the /orgs api
 # -----------------------------------------------------------
 function get_org_emails() {
-  curl -s "https://api.github.com/orgs/${1}/repos?per_page=100" | grep html_url | sort | uniq | awk -F \" '{print $4}' | tail -n +2 | while read repo; do
+  curl -s "https://api.github.com/orgs/${1}/repos?per_page=100" | grep -F clone_url | grep -E -o 'http.*git' | sort -u | while read repo; do
     # -----------------------------------------------------------
     # set up the results directory and file
     # -----------------------------------------------------------
-    repo_dir=$(basename "${repo}")
+    repo_dir=$(basename "${repo}" ".git")
     output_dir="${temp_dir}/${1}/${repo_dir}"
     output_file="${output_dir}/${repo_dir}.results"
     mkdir -p "${output_dir}"
@@ -118,11 +118,11 @@ function get_org_emails() {
 # grab the list of repos via the /orgs api
 # -----------------------------------------------------------
 function get_user_emails() {
-  curl -s "https://api.github.com/users/${1}/repos?per_page=100" | grep html_url | sort | uniq | awk -F \" '{print $4}' | tail -n +2 | while read repo; do
+  curl -s "https://api.github.com/users/${1}/repos?per_page=100" | grep -F clone_url | grep -E -o 'http.*git' | sort -u | while read repo; do
     # -----------------------------------------------------------
     # set up the results directory and file
     # -----------------------------------------------------------
-    repo_dir=$(basename "${repo}")
+    repo_dir=$(basename "${repo}" ".git")
     output_dir="${temp_dir}/${1}/${repo_dir}"
     output_file="${output_dir}/${repo_dir}.results"
     mkdir -p "${output_dir}"
