@@ -18,21 +18,6 @@ info="$blue*$rst"
 success="$green+$rst"
 
 # -----------------------------------------------------------
-# filter configuration
-# -----------------------------------------------------------
-if echo "a" | grep -P "a" 2>/dev/null 1>&2; then
-	filter_function() {
-		grep -P -o '(?<=<)[^>]+'
-	}
-else
-	filter_function() {
-		grep -E -o '<[^>]+' | cut -c2-
-	}
-fi
-
-
-
-# -----------------------------------------------------------
 # runtime configuration
 # -----------------------------------------------------------
 count=0
@@ -97,12 +82,12 @@ function get_org_emails() {
     # -----------------------------------------------------------
     git clone -n -q "${repo}"
     cd "${repo_dir}" || { echo "Could not cd to ${repo}" 1>&2; exit 1; }
-    git log --all | grep "^Author:" | sort -u | filter_function >> "${output_file}"
+    git log --all --pretty=format:'%ae' | sort -u >> "${output_file}"
 
     # -----------------------------------------------------------
     # update user with status
     # -----------------------------------------------------------
-    total=$(git log --all | grep "^Author:" | sort -u | filter_function | wc -l)
+    total=$(git log --all --pretty=format:'%ae' | sort -u | wc -l)
     [ "$total" -gt 0 ] && log_success "Dumped ${total} email addresses to ${output_file}"
 
     # -----------------------------------------------------------
@@ -132,12 +117,12 @@ function get_user_emails() {
     # -----------------------------------------------------------
     git clone -n -q "${repo}"
     cd "${repo_dir}" || { echo "Could not cd to ${repo}" 1>&2; exit 1; }
-    git log --all | grep "^Author:" | sort -u | filter_function >> "${output_file}"
+    git log --all --pretty=format:'%ae' | sort -u >> "${output_file}"
 
     # -----------------------------------------------------------
     # update user with status
     # -----------------------------------------------------------
-    total=$(git log --all | grep "^Author:" | sort -u | filter_function | wc -l)
+    total=$(git log --all --pretty=format:'%ae' | sort -u | wc -l)
     [ "$total" -gt 0 ] && log_success "Dumped ${total} email addresses to ${output_file}"
 
     # -----------------------------------------------------------
